@@ -1,8 +1,10 @@
+import copy
+
 from music21 import *
 import matplotlib.pyplot as plt
+import pretty_midi
 
-
-def get_staccato(score):
+def get_staccato(score, out_file, option_staccato=True):
     """
     :param score: score object (loaded XML file)
     :return: list of midi notes which have been tagged as staccato in the corresponding XML file
@@ -14,15 +16,26 @@ def get_staccato(score):
     midi = converter.parse(midi_file)
 
     staccato_notes = []
-    for count, note in enumerate(score.flat.notes):
-        if note.articulations:
-            for articulation in note.articulations:
-                if articulation.name == 'staccato':
+    for count, xml_note in enumerate(score.flat.notes[::-1]):
+        staccato_bool = False
+        if xml_note.articulations:
+            for xml_articulation in xml_note.articulations:
+                if xml_articulation.name == 'staccato':
                     # print(f"this is a {articulation.name} note in position {count}")
-                    midi_note = midi.flat.getElementsByOffset(note.offset, classList=['Note'])[0]
-                    staccato_notes.append([count, midi_note])
-                    # Breaking to avoid looping in articulations list after having found staccato
-                    break
+                    # convert the XML note into a rest
+                    staccato_bool = True
+        xml_rest = note.Rest()
+        xml_rest.duration.quarterLength = xml_note.duration.quarterLength
+        xml_rest.offset = xml_note.offset
+
+        if not staccato_bool == option_staccato:
+            # replace the XML note with the rest in its measure
+            measure = xml_note.getContextByClass('Measure')
+            measure.remove(xml_note)
+            measure.insert(xml_note.offset, xml_rest)
+
+    score.write("xml", out_file+".xml")
+    score.write("midi", out_file + ".midi")
     return staccato_notes
 
 
@@ -39,7 +52,7 @@ def plot_midi(midi):
     offsets = [o for p, o in pitch_offsets]
 
     # Plot the pitch contour over time
-    plt.plot(offsets, pitches, color='black')
+    plt.plot(offsets, pitches, "o", color='black')
     plt.xlabel('Time (seconds)')
     plt.ylabel('Pitch (MIDI number)')
     plt.show()
@@ -84,8 +97,12 @@ print(len(score.flat.getElementsByClass('Note')))
 midi_file = score.write('midi')
 # Creating MIDI object from previous file
 midi = converter.parse(midi_file)
-tag = get_staccato(score)
+unscore = copy.deepcopy(score)
+tag = get_staccato(score, out_file="stac", option_staccato=True)
+untag = get_staccato(unscore, out_file="rest", option_staccato=False)
+
 tag_plot = fill_gaps(tag)
+
 removed = remove_order(tag_plot)
 
 # for i in range(len(midi.flat.notes)):
@@ -95,7 +112,7 @@ removed = remove_order(tag_plot)
 for note in removed:
     if not isinstance(note, int):
         print("This is a note")
-        start = note.offset
+        start = note.start
         print(start)
 
     else:
@@ -103,7 +120,7 @@ for note in removed:
 
 tempo = score.getTimeSignatures()
 print(tempo)
-
+plot_midi(midi)
     # start_time = note.offset
     # duration = note.duration.quarterLength
     # end_time = start_time + duration * 60.0 / tempo
