@@ -65,29 +65,9 @@ midi_file = score.write('midi')
 # Creating MIDI object from previous file
 midi = converter.parse(midi_file)
 unscore = copy.deepcopy(score)
-tag = get_staccato(score, out_file="stac", option_staccato=True)
-untag = get_staccato(unscore, out_file="rest", option_staccato=False)
+staccato_tag = get_staccato(score, out_file="stac", option_staccato=True)
+nonstaccato_tag = get_staccato(unscore, out_file="rest", option_staccato=False)
 
-tag_plot = fill_gaps(tag)
-
-removed = remove_order(tag_plot)
-
-# for i in range(len(midi.flat.notes)):
-#     start_time = midi.secondsMap.noteStartTime(midi.flat.notes[i])
-#     print('Note starts at ', start_time)
-
-for note in removed:
-    if not isinstance(note, int):
-        print("This is a note")
-        start = note.start
-        print(start)
-
-    else:
-        print("This is an integer")
-
-tempo = score.getTimeSignatures()
-print(tempo)
-plot_midi(midi)
     # start_time = note.offset
     # duration = note.duration.quarterLength
     # end_time = start_time + duration * 60.0 / tempo
