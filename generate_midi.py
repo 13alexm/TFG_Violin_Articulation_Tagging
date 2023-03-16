@@ -2,6 +2,15 @@ import pretty_midi
 
 
 def merge2midi(midi1, midi2, ins1, ins2, outf):
+    """
+
+    :param midi1: midi input path 1
+    :param midi2: midi input path 2
+    :param ins1: string name of the instrument for input 1
+    :param ins2: string name of the instrument for input 2
+    :param outf: name for the output file
+    :return: merged midi object
+    """
     chan1 = pretty_midi.PrettyMIDI(midi1)
     chan2 = pretty_midi.PrettyMIDI(midi2)
 
@@ -19,7 +28,7 @@ def merge2midi(midi1, midi2, ins1, ins2, outf):
 
     merged.instruments.append(chan1_ins)
     merged.instruments.append(chan2_ins)
-    merged.write(outf)
+    merged.write(outf+'.midi')
 
     return merged
 
