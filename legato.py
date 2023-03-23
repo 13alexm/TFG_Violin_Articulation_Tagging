@@ -1,8 +1,6 @@
 from music21 import *
 
-
 s = converter.parse("etudes/xml/kreutzer4.mxl")
-#slurs = s.flat.getElementsByClass('Slur')[:-1]
 new_voice = stream.Voice(id=2)
 
 slurs = []
@@ -26,6 +24,6 @@ for xml_note in s.flat.notes:
 s.append(new_voice)
 s.write("xml", "legato_test.xml")
 s.write("midi", "legato_test.midi")
-def get_legato(score, out_file, option_staccato=True):
 
+def get_legato(score, out_file, option_staccato=True):
     pass
