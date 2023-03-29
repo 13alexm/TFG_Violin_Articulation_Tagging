@@ -1,25 +1,38 @@
 from music21 import *
 
-s = converter.parse("etudes/xml/kreutzer4.mxl")
+s = converter.parse("etudes/xml/test.mxl")
 new_voice = stream.Voice(id=2)
-
-slurs = []
-voice = s.makeVoices()[1]
+# Add break if articulation
+slur_bounds = []
 for xml_slur in s.flat.getElementsByClass('Slur'):
-    slurs.append(xml_slur.getFirst())
-    slurs.append(xml_slur.getLast())
+    start_offset = xml_slur.getFirst().offset
+    end_offset = xml_slur.getLast().offset
+    slur_bounds.append([start_offset, end_offset])
+    #notes_in_between = s.getElementsByClass("Note").getElementsByOffset(start_offset, end_offset)
+    #slurs.extend([_ for _ in notes_in_between])
 
 
-print(slurs)
-
+print(slur_bounds)
+i = 0
+dummy = False
 for xml_note in s.flat.notes:
-    if xml_note not in slurs:
-        xml_rest = note.Rest()
-        xml_rest.duration.quarterLength = xml_note.duration.quarterLength
-        xml_rest.offset = xml_note.offset
-        new_voice.append(xml_rest)
-    else:
-        new_voice.append(xml_note)
+    if not xml_note.articulations:
+        if xml_note.offset > slur_bounds[0][0]:
+            dummy = True
+            print(f"This {xml_note} is the first note")
+
+        elif xml_note.offset > slur_bounds[0][1]:
+            dummy = False
+            slur_bounds.pop(0)
+
+        if not dummy:
+            xml_rest = note.Rest()
+            xml_rest.duration.quarterLength = xml_note.duration.quarterLength
+            xml_rest.offset = xml_note.offset
+            new_voice.append(xml_rest)
+
+        if dummy:
+            new_voice.append(xml_note)
 
 s.append(new_voice)
 s.write("xml", "legato_test.xml")
