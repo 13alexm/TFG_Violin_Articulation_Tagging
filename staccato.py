@@ -25,3 +25,5 @@ def get_staccato(score, out_file, option_staccato=True):
     score.write("xml", out_file + ".xml")
     score.write("midi", out_file + ".midi")
     return score
+
+
