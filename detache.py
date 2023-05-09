@@ -8,7 +8,7 @@ def get_staccato(scr, out_file, option_staccato=True):
         staccato_bool = False
         if xml_note.articulations:
             for xml_articulation in xml_note.articulations:
-                if xml_articulation.name == 'staccato':
+                if xml_articulation.name == 'tenuto':
                     # print(f"this is a {articulation.name} note in position {count}")
                     # convert the XML note into a rest
                     staccato_bool = True
@@ -27,11 +27,3 @@ def get_staccato(scr, out_file, option_staccato=True):
     score.write("midi", out_file + ".midi")
     scr.write("midi", out_file + "_full" + ".midi")
     return score
-
-
-if __name__ == '__main__':
-    sc = converter.parse('etudes/xml/Staccato/wohlfahrt45.mxl')
-    get_staccato(sc, 'w45test', option_staccato=True)
-
-    merge2midi('w45test.midi', 'w45test_full.midi', "w45out")
-
