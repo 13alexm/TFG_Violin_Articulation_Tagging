@@ -21,6 +21,11 @@ if __name__ == '__main__':
             file = os.path.splitext(filename)[0]
 
             s = converter.parse(fullpath)
-            s = get_staccato(s, f'outputs/{file}_processed')
+            s = get_legato(s, f'outputs/{file}_processed')
             print("File: ", file, ' was completed')
             # print("Error in file: ", file)
+
+    for filename in os.listdir('etudes/midi'):
+        if os.path.isfile(os.path.join('etudes/midi', filename)):
+            fullpath = os.path.join('etudes/midi', filename)
+            file = os.path.splitext(filename)[0]
