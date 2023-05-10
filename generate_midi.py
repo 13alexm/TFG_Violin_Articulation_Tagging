@@ -1,6 +1,55 @@
 import pretty_midi
 
 
+def merge4midi(midi1, midi2, midi3, midi4, outf, ins1='Harpsichord', ins2='String Ensemble 1', ins3='Clarinet',
+               ins4='Violin'):
+    """
+    :param ins4:
+    :param midi4:
+    :param midi1: midi input path 1, the staccato notes
+    :param midi2: midi input path 2, the legato notes
+    :param midi3: midi input path 3, the rest of the notes
+    :param ins1: string name of the instrument for input 1
+    :param ins2: string name of the instrument for input 2
+    :param ins3: string name of the instrument for input 3
+    :param outf: name for the output file
+    :return: merged midi object
+    """
+    chan1 = pretty_midi.PrettyMIDI(midi1)
+    chan2 = pretty_midi.PrettyMIDI(midi2)
+    chan3 = pretty_midi.PrettyMIDI(midi3)
+    chan4 = pretty_midi.PrettyMIDI(midi4)
+
+    chan1_ins = pretty_midi.Instrument(program=pretty_midi.instrument_name_to_program(ins1))
+    chan2_ins = pretty_midi.Instrument(program=pretty_midi.instrument_name_to_program(ins2))
+    chan3_ins = pretty_midi.Instrument(program=pretty_midi.instrument_name_to_program(ins3))
+    chan4_ins = pretty_midi.Instrument(program=pretty_midi.instrument_name_to_program(ins4))
+
+    merged = pretty_midi.PrettyMIDI()
+    merged.time_signature_changes.append(chan1.time_signature_changes[0])
+    # Initializing the midi object with the time signature of the first input
+    for instrument in chan1.instruments:
+        for note in instrument.notes:
+            chan1_ins.notes.append(note)
+    for instrument in chan2.instruments:
+        for note in instrument.notes:
+            chan2_ins.notes.append(note)
+    for instrument in chan3.instruments:
+        for note in instrument.notes:
+            chan3_ins.notes.append(note)
+    for instrument in chan4.instruments:
+        for note in instrument.notes:
+            chan4_ins.notes.append(note)
+
+    merged.instruments.append(chan1_ins)
+    merged.instruments.append(chan2_ins)
+    merged.instruments.append(chan3_ins)
+    merged.instruments.append(chan4_ins)
+    merged.write(outf + '.midi')
+
+    return merged
+
+
 def merge3midi(midi1, midi2, midi3, outf, ins1='Harpsichord', ins2='String Ensemble 1', ins3='Violin'):
     """
     :param midi1: midi input path 1, the staccato notes
@@ -21,7 +70,8 @@ def merge3midi(midi1, midi2, midi3, outf, ins1='Harpsichord', ins2='String Ensem
     chan3_ins = pretty_midi.Instrument(program=pretty_midi.instrument_name_to_program(ins3))
 
     merged = pretty_midi.PrettyMIDI()
-
+    merged.time_signature_changes.append(chan1.time_signature_changes[0])
+    # Initializing the midi object with the time signature of the first input
     for instrument in chan1.instruments:
         for note in instrument.notes:
             chan1_ins.notes.append(note)
@@ -48,6 +98,9 @@ def merge2midi(midi1, midi2, outf, ins1='Harpsichord', ins2='String Ensemble 1')
     chan2_ins = pretty_midi.Instrument(program=pretty_midi.instrument_name_to_program(ins2))
 
     merged = pretty_midi.PrettyMIDI()
+    merged.time_signature_changes.append(chan1.time_signature_changes[0])
+    # Initializing the midi object with the time signature of the first input
+    merged = pretty_midi.PrettyMIDI()
 
     for instrument in chan1.instruments:
         for note in instrument.notes:
@@ -61,19 +114,6 @@ def merge2midi(midi1, midi2, outf, ins1='Harpsichord', ins2='String Ensemble 1')
     merged.write(outf + '.midi')
 
     return merged
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 # stac = pretty_midi.PrettyMIDI("stac.midi")
 # rest = pretty_midi.PrettyMIDI("rest.midi")

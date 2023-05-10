@@ -2,7 +2,7 @@ from music21 import *
 from generate_midi import *
 import copy
 
-def get_staccato(scr, out_file, option_staccato=True):
+def get_detache(scr, out_file, option_staccato=True):
     score = copy.deepcopy(scr)
     for count, xml_note in enumerate(score.flat.notes[::-1]):
         staccato_bool = False
