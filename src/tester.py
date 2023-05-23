@@ -1,9 +1,5 @@
-import os
 from music21 import *
 from staccato import get_staccato
-from legato import get_legato
-from detache import get_detache
-from generate_midi import *
 
 file = converter.parse('etudes/telemann.mxl')
 

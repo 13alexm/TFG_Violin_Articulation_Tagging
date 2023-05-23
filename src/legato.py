@@ -51,6 +51,6 @@ def get_legato(scr, out_file, option_legato=True):
 
 
 if __name__ == '__main__':
-    sc = converter.parse('etudes/xml/test.mxl')
-    scc = converter.parse('etudes/xml/Staccato/wohlfahrt24.mxl')
+    sc = converter.parse('../etudes/xml/test.mxl')
+    scc = converter.parse('../etudes/xml/Staccato/wohlfahrt24.mxl')
     get_legato(scc, 'what')

@@ -1,8 +1,7 @@
 import os
 from music21 import *
 from staccato import get_staccato
-from legato import get_legato
-from generate_midi import *
+from src.legato import get_legato
 
 if __name__ == '__main__':
     for filename in os.listdir('etudes/xml/Staccato'):
