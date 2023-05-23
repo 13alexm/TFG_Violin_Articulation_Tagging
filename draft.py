@@ -11,12 +11,5 @@ for slur in s.flat.getElementsByClass('Slur'):
     print(slur_bounds)
     dummy = False
 
-    for note in s.recurse().notes:
-        note_offset = note.getOffsetInHierarchy(s)
-        if slur_bounds[0][0] <= note_offset < slur_bounds[0][1]:
-            print(note.pitch)
-            if slur_bounds[0][2] == note_offset:
-                slur_bounds.pop(0)
-
 
 

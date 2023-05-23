@@ -13,7 +13,6 @@ def get_legato(scr, out_file, option_legato=True):
         slur_bounds.append([start.getOffsetInHierarchy(s), end.getOffsetInHierarchy(s) + end.duration.quarterLength,
                             end.getOffsetInHierarchy(s)])
     print(slur_bounds)
-    dummy = False
 
     for xml_note in s.recurse().notes:
         legato_bool = False
@@ -22,10 +21,9 @@ def get_legato(scr, out_file, option_legato=True):
             if slur_bounds[0][0] <= note_offset < slur_bounds[0][1]:
                 if not xml_note.articulations:
                     legato_bool = True
-                    print(f'Writing {xml_note.pitch} with articulation {xml_note.articulations}')
+                    print(f'Writing {xml_note} with articulation {xml_note.articulations}')
                 else:
                     legato_bool = False
-
 
             xml_rest = note.Rest()
             xml_rest.duration.quarterLength = xml_note.duration.quarterLength
@@ -36,7 +34,7 @@ def get_legato(scr, out_file, option_legato=True):
                 measure = xml_note.getContextByClass('Measure')
                 measure.remove(xml_note)
                 measure.insert(xml_note.offset, xml_rest)
-                print(f'Resting {xml_note.pitch}')
+                print(f'Resting {xml_note}')
             if slur_bounds[0][2] == note_offset:
                 slur_bounds.pop(0)
         else:
@@ -46,7 +44,7 @@ def get_legato(scr, out_file, option_legato=True):
             measure = xml_note.getContextByClass('Measure')
             measure.remove(xml_note)
             measure.insert(xml_note.offset, xml_rest)
-            print(f'Resting {xml_note.pitch}')
+            print(f'Resting {xml_note}')
 
     s.write("midi", out_file + ".midi")
     scr.write("midi", out_file + "_full" + ".midi")

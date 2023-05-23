@@ -2,14 +2,15 @@ from music21 import *
 from generate_midi import *
 import copy
 
-def get_staccato(scr, out_file, option_staccato=True):
+
+def get_staccato(scr, out_file, option_staccato=True):  # CHECK VOICES HANDLING
     score = copy.deepcopy(scr)
-    for count, xml_note in enumerate(score.flat.notes[::-1]):
+    for xml_note in score.recurse().notes:
         staccato_bool = False
         if xml_note.articulations:
             for xml_articulation in xml_note.articulations:
-                if xml_articulation.name == 'staccato':
-                    # print(f"this is a {articulation.name} note in position {count}")
+                if xml_articulation.name == 'staccato' or xml_articulation.name == 'staccatissimo' or xml_articulation.name == 'spiccato':
+                    print(f"Note {xml_note.pitches} with articulation {xml_note.articulations}")
                     # convert the XML note into a rest
                     staccato_bool = True
 
@@ -23,15 +24,12 @@ def get_staccato(scr, out_file, option_staccato=True):
             measure.remove(xml_note)
             measure.insert(xml_note.offset, xml_rest)
 
-   # score.write("xml", out_file + ".xml")
+    # score.write("xml", out_file + ".xml")
     score.write("midi", out_file + ".midi")
     scr.write("midi", out_file + "_full" + ".midi")
     return score
 
 
 if __name__ == '__main__':
-    sc = converter.parse('etudes/xml/Staccato/wohlfahrt45.mxl')
-    get_staccato(sc, 'w45test', option_staccato=True)
-
-    merge2midi('w45test.midi', 'w45test_full.midi', "w45out")
-
+    sc = converter.parse('etudes/t.mxl')
+    get_staccato(sc, 'kreutzer', option_staccato=True)
