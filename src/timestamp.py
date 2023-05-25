@@ -77,5 +77,9 @@ def write_time_stamps(ts, out_name):
 
 
 if __name__ == '__main__':
-    time_stamps = timestamp('wohlfahrt.midi')
-    write_time_stamps(time_stamps, "w24_timestamps")
+    time_stamps = timestamp('kr4.midi')
+    write_time_stamps(time_stamps, "kr4_timestamps")
+
+    time_stamps = timestamp('kr4_2.midi')
+    write_time_stamps(time_stamps, "kr4_2_timestamps")
+

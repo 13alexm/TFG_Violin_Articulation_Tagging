@@ -4,11 +4,11 @@ from legato import get_legato
 from detache import get_detache
 import generate_midi as gm
 
-file = converter.parse('etudes/xml/Staccato/wohlfahrt24_2.mxl')
+file = converter.parse('etudes/xml/Staccato/kreutzer4.mxl')
 
 
-get_staccato(file, 'w242_stac')
-get_legato(file, 'w242_leg')
-get_detache(file, 'w242_det')
-gm.merge4midi('w242_stac.midi', 'w242_leg.midi', 'w242_det.midi', 'w242_stac_full.midi', 'w242_final')
+get_staccato(file, 'k4_stac')
+get_legato(file, 'k4_leg')
+get_detache(file, 'k4_det')
+gm.merge4midi('k4_stac.midi', 'k4_leg.midi', 'k4_det.midi', 'k4_stac_full.midi', 'k4_final')
 
