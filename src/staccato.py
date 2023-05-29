@@ -1,5 +1,4 @@
 from music21 import *
-from generate_midi import *
 import copy
 
 

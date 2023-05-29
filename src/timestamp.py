@@ -1,6 +1,7 @@
 import pandas as pd
 import pretty_midi
-import librosa
+import os
+from pydub import AudioSegment
 
 
 def timestamp(midi_file):
@@ -71,15 +72,28 @@ def timestamp(midi_file):
     return stamps
 
 
-def write_time_stamps(ts, out_name):
+def write_time_stamps(midi_path, out_name):
+    ts = timestamp(midi_path)
     df = pd.DataFrame(ts)
     df.to_csv(out_name + '.csv', index=False, header=False)
 
 
+def cut_audio(audio_file, timestamps, output_dir='Data_Segments'):
+    df = pd.read_csv(timestamps)
+
+    os.makedirs(output_dir, exist_ok=True)
+
+    for index, row in df.iterrows():
+        start = row[0] * 1000  # Converting time from seconds to milliseconds
+        end = row[1] * 1000
+        label = row[2]
+
+        output_file = os.path.join(output_dir, f"{label}_segment_{index}.wav")
+
+        audio = AudioSegment.from_file(audio_file)
+        sliced_audio = audio[start:end]
+        sliced_audio.export(output_file, format='wav')
+
+
 if __name__ == '__main__':
-    time_stamps = timestamp('kr4.midi')
-    write_time_stamps(time_stamps, "kr4_timestamps")
-
-    time_stamps = timestamp('kr4_2.midi')
-    write_time_stamps(time_stamps, "kr4_2_timestamps")
-
+    cut_audio('Alignments/w24.wav', 'Alignments/w24_timestamps.csv')

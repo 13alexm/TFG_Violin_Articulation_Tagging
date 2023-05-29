@@ -1,6 +1,5 @@
 from music21 import *
 import copy
-from generate_midi import *
 
 
 def get_legato(scr, out_file, option_legato=True):
@@ -47,7 +46,6 @@ def get_legato(scr, out_file, option_legato=True):
             print(f'Resting {xml_note}')
 
     s.write("midi", out_file + ".midi")
-    scr.write("midi", out_file + "_full" + ".midi")
 
 
 if __name__ == '__main__':

@@ -1,4 +1,29 @@
 import pretty_midi
+import os
+from music21 import *
+from staccato import get_staccato
+from legato import get_legato
+from detache import get_detache
+
+
+def get_midi_with_articulations(xml_path):
+    xml = converter.parse(xml_path)
+    name = os.path.splitext(os.path.basename(xml_path))[0]
+    multi = "Multichannel_MIDI"
+    single = "SingleChannel_MIDI"
+    os.makedirs(multi, exist_ok=True)
+    os.makedirs(single, exist_ok=True)
+    print("Getting the articulations of: ", name)
+    stac_path = os.path.join(single, name + '_staccato')
+    leg_path = os.path.join(single, name + '_legato')
+    det_path = os.path.join(single, name + '_detache')
+
+    get_staccato(xml, stac_path)
+    get_legato(xml, leg_path)
+    get_detache(xml, det_path)
+
+    final_name = os.path.join(multi, name + '_multi')
+    merge4midi(stac_path+'.midi', leg_path+'.midi', det_path+'.midi', stac_path+'_full.midi', final_name)
 
 
 def merge4midi(midi1, midi2, midi3, midi4, outf, ins1='Harpsichord', ins2='String Ensemble 1', ins3='Clarinet',
@@ -114,4 +139,3 @@ def merge2midi(midi1, midi2, outf, ins1='Harpsichord', ins2='String Ensemble 1')
     merged.write(outf + '.midi')
 
     return merged
-
