@@ -17,4 +17,6 @@ if __name__ == '__main__':
         if os.path.isfile(os.path.join("Aligned_MIDI", filename)):
             fullpath = os.path.join("Aligned_MIDI", filename)
             name = os.path.splitext(filename)[0]
-            ts.write_time_stamps(fullpath, 'Aligned_MIDI/'+name+'_time')
+            ts.write_time_stamps(fullpath, 'Aligned_CSV/'+name+'_time')
+
+

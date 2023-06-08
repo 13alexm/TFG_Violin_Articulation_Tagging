@@ -8,7 +8,7 @@ def timestamp(midi_file):
     midi = pretty_midi.PrettyMIDI(midi_file)
     # midi.instruments.pop()  # Deleting channel containing all the notes
     notes_starts = {}
-
+    print("Getting timestamps of: ", midi_file)
     for instrument in midi.instruments:
         for note in instrument.notes:
             if note.start in notes_starts:
@@ -27,8 +27,6 @@ def timestamp(midi_file):
 
     notes_starts_sorted = sorted(notes_starts.items())
     notes_ends_sorted = sorted(notes_ends.items())
-    print(notes_starts_sorted)
-    print(notes_ends_sorted)
 
     start = None
     end = None
@@ -42,7 +40,7 @@ def timestamp(midi_file):
             end = time
             articulation = current_articulation
         elif current_articulation != articulation:
-            print(f'Time segment starts in {start}, ends in {end} with articulation {articulation[0]}')
+            #print(f'Time segment starts in {start}, ends in {end} with articulation {articulation[0]}')
             stamps += [[start, end, articulation[0]]]
             start = time
             end = time
@@ -52,7 +50,7 @@ def timestamp(midi_file):
         idx += 1
 
     if articulation is not None:
-        print(f'Time segment starts in {start}, ends in {notes_ends_sorted[-1][0]} with articulation {articulation[0]}')
+        #print(f'Time segment starts in {start}, ends in {notes_ends_sorted[-1][0]} with articulation {articulation[0]}')
         stamps.append([start, notes_ends_sorted[-1][0], articulation[0]])
 
     for idx, value in enumerate(stamps):

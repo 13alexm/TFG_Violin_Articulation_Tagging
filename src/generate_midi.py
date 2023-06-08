@@ -6,6 +6,14 @@ from legato import get_legato
 from detache import get_detache
 
 
+def remove_long_notes(midi_file):
+    midi = pretty_midi.PrettyMIDI(midi_file)
+    for midi_instrument in midi.instruments:
+        for midi_note in midi_instrument.notes:
+            if midi_note.end - midi_note.start > 1.5:
+                midi_instrument.notes.remove(midi_note)
+    midi.write(midi_file)
+
 def get_midi_with_articulations(xml_path):
     xml = converter.parse(xml_path)
     name = os.path.splitext(os.path.basename(xml_path))[0]
@@ -23,7 +31,8 @@ def get_midi_with_articulations(xml_path):
     get_detache(xml, det_path)
 
     final_name = os.path.join(multi, name + '_multi')
-    merge4midi(stac_path+'.midi', leg_path+'.midi', det_path+'.midi', stac_path+'_full.midi', final_name)
+    merge4midi(stac_path + '.midi', leg_path + '.midi', det_path + '.midi', stac_path + '_full.midi', final_name)
+
 
 
 def merge4midi(midi1, midi2, midi3, midi4, outf, ins1='Harpsichord', ins2='String Ensemble 1', ins3='Clarinet',
@@ -71,7 +80,7 @@ def merge4midi(midi1, midi2, midi3, midi4, outf, ins1='Harpsichord', ins2='Strin
     merged.instruments.append(chan3_ins)
     merged.instruments.append(chan4_ins)
     merged.write(outf + '.midi')
-
+    remove_long_notes(outf + '.midi')
     return merged
 
 
