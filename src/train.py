@@ -2,7 +2,6 @@ import os
 import librosa
 import numpy as np
 import matplotlib.pyplot as plt
-import torch
 
 
 def apply_fft(input_dir, output_dir='STFT_Segments'):
