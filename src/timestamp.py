@@ -2,7 +2,6 @@ import pandas as pd
 import pretty_midi
 import os
 from pydub import AudioSegment
-import glob
 
 
 def timestamp(midi_file):
@@ -58,9 +57,13 @@ def timestamp(midi_file):
         match value[2]:
             case 6:
                 value[2] = 'Staccato'
+            case '6':
+                value[2] = 'Staccato'
             case [6]:
                 value[2] = 'Staccato'
             case 48:
+                value[2] = 'Legato'
+            case '48':
                 value[2] = 'Legato'
             case [48]:
                 value[2] = 'Legato'
@@ -83,12 +86,12 @@ def write_time_stamps(midi_path, out_name):
     df.to_csv(out_name + '.csv', index=False, header=False)
 
 
-def cut_audio(audio_file, timestamps, output_dir='Data_Segments'):
+def cut_audio(audio_file, timestamps, output_dir='Data_Segments/LegatoEtudes/'):
     df = pd.read_csv(timestamps)
 
     os.makedirs(output_dir, exist_ok=True)
-    os.makedirs(output_dir+'/Staccato', exist_ok=True)
-    os.makedirs(output_dir+'/Legato', exist_ok=True)
+    os.makedirs(output_dir + '/Staccato', exist_ok=True)
+    os.makedirs(output_dir + '/Legato', exist_ok=True)
 
     for index, row in df.iterrows():
         start = row[0] * 1000  # Converting time from seconds to milliseconds
@@ -109,7 +112,7 @@ def cut_audio(audio_file, timestamps, output_dir='Data_Segments'):
         audio = AudioSegment.from_file(audio_file)
         sliced_audio = audio[start:end]
         if label == 'Staccato':
-            output_file = os.path.join(output_dir+'/Staccato', f"{name}_{label}_segment_{index}.wav")
+            output_file = os.path.join(output_dir + '/Staccato', f"{name}_{label}_segment_{index}.wav")
             sliced_audio.export(output_file, format='wav')
         if label == 'Legato':
             output_file = os.path.join(output_dir + '/Legato', f"{name}_{label}_segment_{index}.wav")
@@ -122,10 +125,22 @@ def cut_audio(audio_file, timestamps, output_dir='Data_Segments'):
 if __name__ == '__main__':
     output_dir = 'Data_Segments'
     os.makedirs(output_dir, exist_ok=True)
-    os.makedirs(output_dir+'/Staccato', exist_ok=True)
-    os.makedirs(output_dir+'/Legato', exist_ok=True)
-    audio_directory = 'Recordings/Staccato'
-    csv_directory = 'Alignments/Staccato/Timestamps'
+    os.makedirs(output_dir + '/Staccato', exist_ok=True)
+    os.makedirs(output_dir + '/Legato', exist_ok=True)
+    os.makedirs('Alignments/Staccato/Timestamps', exist_ok=True)
+    os.makedirs('Alignments/Legato/Timestamps', exist_ok=True)
+
+    for files in os.listdir('Alignments/Staccato'):
+        if files.endswith('.midi'):
+            fullpath = os.path.join("Alignments/Staccato", files)
+            name = os.path.splitext(files)[0]
+            write_time_stamps(fullpath, f'Alignments/Staccato/Timestamps/{name}')
+
+    for files in os.listdir('Alignments/Legato'):
+        if files.endswith('.midi'):
+            fullpath = os.path.join("Alignments/Legato", files)
+            name = os.path.splitext(files)[0]
+            write_time_stamps(fullpath, f'Alignments/Legato/Timestamps/{name}')
 
     os.makedirs(output_dir + '/StaccatoEtudes', exist_ok=True)
     os.makedirs(output_dir + '/LegatoEtudes', exist_ok=True)
@@ -144,4 +159,3 @@ if __name__ == '__main__':
             if audio_filename == csv_filename:
                 print(audio_filename, csv_filename)
                 cut_audio('Recordings/Legato/' + audio_filee, 'Alignments/Legato/Timestamps/' + csv_file)
-

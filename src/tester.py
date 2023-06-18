@@ -1,5 +1,6 @@
 import os
 import timestamp as ts
+import generate_midi as gm
 
 
 def change_name(n):
@@ -23,6 +24,11 @@ def rename(n, ren):
     return "_".join(parts)
 
 
+fullpath = 'etudes/telemann.mxl'
+gm.get_midi_with_articulations(fullpath)
+
+
+
 # os.makedirs('Alignments/Staccato/Timestamps', exist_ok=True)
 # for filename in os.listdir("Alignments/Staccato"):
 #     if os.path.isfile(os.path.join("Alignments/Staccato", filename)):
@@ -39,18 +45,18 @@ def rename(n, ren):
 #
 #         ts.write_time_stamps(fullpath, 'Alignments/Legato/Timestamps/' + change_name(name).lower())
 
-for filename in os.listdir("Data_Segments"):
-    name = os.path.splitext(filename)[0]
-    if middle(name) == 40:
-        try:
-            os.remove(filename)
-        except:
-            print("Error")
-    if middle(name) == "6":
-        try:
-            os.rename(os.path.join("Data_Segments", filename), rename(os.path.join("Data_Segments", filename), "Staccato"))
-        except:
-            print("Cannot perform operation for", filename)
+# for filename in os.listdir("Data_Segments"):
+#     name = os.path.splitext(filename)[0]
+#     if middle(name) == 40:
+#         try:
+#             os.remove(filename)
+#         except:
+#             print("Error")
+#     if middle(name) == "6":
+#         try:
+#             os.rename(os.path.join("Data_Segments", filename), rename(os.path.join("Data_Segments", filename), "Staccato"))
+#         except:
+#             print("Cannot perform operation for", filename)
 
     # if middle(name) == "6":
     #     try:
